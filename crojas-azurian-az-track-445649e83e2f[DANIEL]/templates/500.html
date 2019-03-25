@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load staticfiles %}
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="{% static "img/favicon.png" %}" type="image/vnd.microsoft.icon" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="{% static "css/material.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/material-fullpalette.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/ripples.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/dropdown.css" %}">
+	<link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>500 - Azurian Track</title>
+</head>
+<body class="fondo-azurian">
+
+    <div class="container-fluid">
+
+		<div>
+            <a href="/">
+                <img src="{% static "img/track_logo.png" %}" width="189" height="50">
+            </a>
+		</div>
+
+		<br>
+
+        <div>
+            Lo sentimos, ha ocurrido un problema en el servidor.
+        </div>
+
+        <br>
+
+        <footer>
+			<a class="link-verde" href="http://www.azurian.com" target="_blank">Copyright © Azurian.com. Todos los Derechos Reservados.</a>
+		</footer>
+
+	</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="{% static "js/dropdown.js" %}"></script>
+	<script src="{% static "js/ripples.min.js" %}"></script>
+	<script src="{% static "js/material.min.js" %}"></script>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-87625163-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+</body>
+</html>

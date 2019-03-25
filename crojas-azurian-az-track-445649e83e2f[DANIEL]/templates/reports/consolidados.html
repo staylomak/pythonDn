@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static "css/jquery.datetimepicker.css" %}">
+{% endblock %}
+
+{% block title %}Consolidados{% endblock %}
+
+{% block content %}
+
+<h2>Generar consolidados</h2>
+
+<form name="consolidado" id="consolidado" method="post" action="">{% csrf_token %}
+
+	<div class="form-group form-group-material-indigo">
+		<label class="control-label">Desde</label>
+		<input class="form-control datePicker" type="text" name="date_from" id="date_from">
+		<span class="mdi-action-today" aria-hidden="true"></span>
+	</div>
+
+	<div class="form-group form-group-material-indigo">
+		<label class="control-label">Hasta</label>
+		<input class="form-control datePicker" type="text" name="date_to" id="date_to">
+		<span class="mdi-action-today" aria-hidden="true"></span>
+	</div>
+
+	<div class="form-group form-group-material-indigo">
+		<label class="control-label">Empresa</label>
+		<select name="empresas" id="empresas" class="form-control">
+			{% for empresa in empresas %}
+				<option value="{{ empresa.rut }}">{{ empresa.empresa }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<button class="btn btn-raised btn-warning" type="submit">Generar</button>
+	</div>
+
+</form>
+
+{% endblock %}
+
+{% block javascript %}
+	<script src="{% static "js/jquery.datetimepicker.js" %}"></script>
+	<script src="{% static "js/reports/consolidados.min.js" %}"></script>
+{% endblock %}

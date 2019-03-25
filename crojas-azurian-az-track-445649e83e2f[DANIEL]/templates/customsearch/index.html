@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="https://cdn.datatables.net/r/bs/jqc-1.11.3,dt-1.10.9/datatables.min.css"/>
+	<link rel="stylesheet" href="{% static "css/bootstrap-material-datetimepicker.css" %}">
+    <link rel="stylesheet" href="{% static "css/dataTables.bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/font-awesome.min.css" %}">
+{% endblock %}
+
+{% block title %}Información detallada{% endblock %}
+
+{% block content %}
+<input type="hidden" id="bucket_name" value="{{ bucket }}" />
+<div style="display:none;" id="divCards"></div>
+<table class="table table-hover table-striped table-condensed table-responsive" id="tableCards" style="font-size:10px;">
+	<thead>
+		<th>Resumen de envío</th>
+		<th>Detalle</th>
+		<th>Adjuntos</th>
+		<th>Folio</th>
+		<th>Correo</th>
+		<th>Fecha envío</th>
+		<th>Rut receptor</th>
+		<th>Nombre cliente</th>
+		<th>Rut emisor</th>
+		<th>Tipo receptor</th>
+		<th>Tipo DTE</th>
+		<th>Monto</th>
+	</thead>
+</table>
+
+<!-- BOTON MATERIAL EXPORT -->
+<div class="csv-download-btn">
+	<button class="btn btn-fab btn-raised btn-material-blue mdi-content-send" style="display:none;"
+	id="btnGenerateReport" type="button" rel="popover" data-animation="true" data-trigger="hover"
+	data-html="true" data-placement="left" data-container="body" data-toggle="popover"
+	data-content="<p>Generar Reporte y enviármelo como correo electrónico adjunto.</p>">
+		<div class="ripple-wrapper"></div>
+	</button>
+</div>
+
+<!-- BOTON MATERIAL MENU -->
+<div class="search-btn" align="right">
+	<button class="btn btn-fab btn-raised btn-material-green mdi-action-search" id="showMenu"
+	type="button" rel="popover" data-animation="true" data-trigger="hover"
+	data-html="true" data-placement="left" data-container="body" data-toggle="popover"
+	data-content="<p>Click para abrir panel de filtro por fechas de período.</p>">
+		<div class="ripple-wrapper"></div>
+	</button>
+</div>
+
+<!-- MODAL MENU BUSCAR -->
+<div class="modal" id="menuModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeMenuModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Búsqueda personalizada</h4>
+            </div>
+            <div class="modal-body">
+            	<br>
+            	<div class="row">
+            		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		            	<div class="form-horizontal">
+		                	<div class="form-group form-group-material-green has-feedback">
+								<label class="control-label">Desde</label>
+								<input class="form-control" type="text" id="date_from">
+								<span class="mdi-action-today form-control-feedback" aria-hidden="true"></span>
+							</div>
+		            	</div>
+            		</div>
+            		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		            	<div class="form-horizontal">
+							<div class="form-group form-group-material-green has-feedback">
+								<label class="control-label">Hasta</label>
+								<input class="form-control" type="text" id="date_to">
+								<span class="mdi-action-today form-control-feedback" aria-hidden="true"></span>
+							</div>
+		            	</div>
+            		</div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label">Nº de folio</label>
+                                <input class="form-control" type="text" data-hint="Número mayor a 0, máximo 20 digitos." id="numeroFolio" maxlength="20">
+                            </div>
+                        </div>
+                    </div>
+            		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+            			<div class="form-horizontal">
+            				<div class="form-group form-group-material-green has-feedback">
+								<label class="control-label">Empresa</label>
+								<select name="empresas" id="empresas" class="form-control">
+									{% for empresa in perfil.empresas.all %}
+										<option value="{{ empresa.rut }}">{{ empresa.empresa }}</option>
+									{% endfor %}
+								</select>
+							</div>
+            			</div>
+            		</div>
+                    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label">Correo</label>
+                                <input class="form-control" type="email" id="correoDestinatario" data-hint="Máximo 250 caracteres." maxlength="250">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label">Rut receptor</label>
+                                <input class="form-control" type="text" id="rutReceptor" data-hint="Rut sin puntos, con guión y K mayúscula. Máximo 10 caracteres." maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+            		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            			<div class="form-horizontal">
+		                	<div class="form-group form-group-material-green has-feedback">
+								<label class="control-label">Monto desde</label>
+								<input class="form-control" type="text" id="mount_from" data-hint="Máximo 20 digitos." maxlength="20">
+							</div>
+		                </div>
+            		</div>
+            		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            			<div class="form-horizontal">
+							<div class="form-group form-group-material-green has-feedback">
+								<label class="control-label">Monto hasta</label>
+								<input class="form-control" type="text" id="mount_to" data-hint="Máximo 20 digitos." maxlength="20">
+							</div>
+		                </div>
+            		</div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="divOpcional1" style="display: none;">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label" id="labelOpcional1">Opcional1</label>
+                                <input class="form-control" type="text" id="opcional1" data-hint="Máximo 255 caracteres." maxlength="255">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="divOpcional2" style="display: none;">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label" id="labelOpcional2">Opcional2</label>
+                                <input class="form-control" type="text" id="opcional2" data-hint="Máximo 255 caracteres." maxlength="255">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="divOpcional3" style="display: none;">
+                        <div class="form-horizontal">
+                            <div class="form-group form-group-material-green has-feedback">
+                                <label class="control-label" id="labelOpcional3">Opcional3</label>
+                                <input class="form-control" type="text" id="opcional3" data-hint="Máximo 255 caracteres." maxlength="255">
+                            </div>
+                        </div>
+                    </div>
+            	</div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <div class="form-group form-group-material-green">
+                        <div class="checkbox checkbox-material-green" align="left">
+                            <label>
+                                <input type="checkbox" id="checkFallidos"> Sólo fallidos
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                	<div class="form-group" align="right">
+                		<button class="btn btn-flat" data-dismiss="modal">Cancelar</button>
+    					<button class="btn btn-material-green" id="run_search">Buscar</button>
+    				</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETALLE EMAIL -->
+<div class="modal" id="emailDetailModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeEmailDetailModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="emailDetailTitle">Detalle de...</h4>
+            </div>
+            <div class="modal-body">
+                <p id="emailDetailBody" style="font-size:12px;"></p>
+            </div>
+            <div class="modal-footer">
+            	<button class="btn btn-material-green" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CARGANDO -->
+<div class="modal" id="loadingModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeLoadingModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Buscando...</h4>
+            </div>
+            <div class="modal-body">
+                <p>por favor espere unos segundos</p>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NOTIFICACIONES -->
+<div class="modal" id="notificationModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeNotificationModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="notificationTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="notificationBody"></p>
+            </div>
+            <div class="modal-footer">
+            	<div class="form-group" align="right" style="margin-right:20px;">
+					<button class="btn btn-flat" data-dismiss="modal">Cerrar</button>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+	<script src="{% static "js/bootstrap-material-datetimepicker.js" %}"></script>
+	<script src="{% static "js/jquery.dataTables.min.js" %}"></script>
+	<script src="{% static "js/dataTables.bootstrap.min.js" %}"></script>
+	<script src="{% static "js/customsearch/index.min.js" %}"></script>
+{% endblock %}

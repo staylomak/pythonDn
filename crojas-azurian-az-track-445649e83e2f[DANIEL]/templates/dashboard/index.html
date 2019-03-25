@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static "css/bootstrap-material-datetimepicker.css" %}">
+{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+		<div class="row">
+
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+				<h4>Resumen solicitados</h4>
+				<div class="panel panel-success">
+					<div class="panel-body">
+						<div align="right">
+							<span id="spanTooltip" rel="popover" data-animation="true" data-toggle="popover"
+								data-html="true" data-trigger="hover" data-placement="bottom"
+								data-container="body" class="mdi-alert-error" style="color:#7FBF10;"
+								data-content="<p>Este gráfico indica los porcentajes de correos enviados y fallidos
+								del universo de correos facturados.</p>">
+							</span>
+						</div>
+						<div class="pie-chart" id="divGeneralStatusPieChart" align="center"></div>
+						<p class="legend-status" id="divResumeGeneral"><label>Sin datos en este período</label></p>
+						<div align="right" style="margin-top:-50px;">
+							<button type="button" class="btn btn-sm btn-material-teal" id="btnGeneralExport"
+							rel="popover" data-animation="true" data-trigger="hover" data-html="true"
+							data-placement="top" data-container="body" data-toggle="popover" disabled="true"
+							data-content="<p>Generar Reporte y enviármelo como correo electrónico adjunto.
+								</p>">Generar Reporte</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+				<h4>Resumen enviados</h4>
+				<div class="panel panel-success">
+					<div class="panel-body">
+						<div align="right">
+							<span id="spanTooltip" rel="popover" data-animation="true" data-toggle="popover"
+								data-html="true" data-trigger="hover" data-placement="bottom"
+								data-container="body" class="mdi-alert-error" style="color:#7FBF10;"
+								data-content="<p>Este gráfico indica del universo de correos enviados
+								los porcentajes de correos leídos y no leídos.</p>">
+							</span>
+						</div>
+						<div class="pie-chart" id="divSendedStatusPieChart" align="center"></div>
+						<p class="legend-status" id="divResumeOpened"><label>Sin datos en este período</label></p>
+						<div align="right" style="margin-top:-50px;">
+							<button type="button" class="btn btn-sm btn-material-teal" id="btnSendedExport"
+							rel="popover" data-animation="true" data-trigger="hover" data-html="true"
+							data-placement="top" data-container="body" data-toggle="popover" disabled="true"
+							data-content="<p>Generar Reporte y enviármelo como correo electrónico adjunto.
+								</p>">Generar Reporte</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+				<h4>Resumen fallidos</h4>
+				<div class="panel panel-success">
+					<div class="panel-body">
+						<div align="right">
+							<span id="spanTooltip" rel="popover" data-animation="true" data-toggle="popover"
+								data-html="true" data-trigger="hover" data-placement="bottom"
+								data-container="body" class="mdi-alert-error" style="color:#7FBF10;"
+								data-content="<p>Este gráfico indica del universo de correos fallidos:<br>
+								<b>Correos Rechazados:</b> Son aquellos que podrían ser detectados como spam, cliente desuscrito,
+								dominio inexistente.
+								<b>Correos Rebotados:</b> Son aquellos que podrían ser detectados como cuenta inexistente, cuenta sobre el límite.
+								</p>">
+							</span>
+						</div>
+						<div class="pie-chart" id="divFailureStatusPieChart" align="center"></div>
+						<p class="legend-status" id="divResumeFailure"><label>Sin datos en este período</label></p>
+						<div align="right" style="margin-top:-50px;">
+							<button class="btn btn-sm btn-material-teal" id="btnFailedExport"
+							rel="popover" data-animation="true" data-trigger="hover" data-html="true"
+							data-placement="top" data-container="body" data-toggle="popover" disabled="true"
+							data-content="<p>Generar Reporte y enviármelo como correo electrónico adjunto.
+								</p>">Generar Reporte</button>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	<div class="row">
+			<div class="col-md-12 col-lg-12">
+				<h4>Gráfica del período</h4>
+				<div class="panel panel-success">
+					<div class="panel-body">
+						<div id="divLineChart"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<div class="search-btn" align="right">
+	<button class="btn btn-fab btn-raised btn-material-green mdi-action-search" id="showMenu" type="button"
+	rel="popover" data-animation="true" data-trigger="hover" data-html="true" data-placement="left"
+	data-container="body" data-toggle="popover"
+	data-content="<p>Click para abrir panel de búsquedas personalizadas.</p>">
+		<div class="ripple-wrapper"></div>
+	</button>
+</div>
+
+<!-- Modal Buscar -->
+<div class="modal" id="menuModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeMenuModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Estadísticas por fechas</h4>
+            </div>
+            <div class="modal-body">
+            	<div class="form-horizontal" style="padding:10px;">
+					<div class="form-group form-group-material-green has-feedback">
+						<label class="control-label">Desde</label>
+						<input class="form-control" type="text" name="date_from" id="date_from">
+						<span class="mdi-action-today form-control-feedback" aria-hidden="true"></span>
+					</div>
+					<div class="form-group form-group-material-green has-feedback">
+						<label class="control-label">Hasta</label>
+						<input class="form-control" type="text" name="date_to" id="date_to">
+						<span class="mdi-action-today form-control-feedback" aria-hidden="true"></span>
+					</div>
+					<div class="form-group form-group-material-green">
+						<label class="control-label">Empresa</label>
+						<select name="empresas" id="empresas" class="form-control">
+							{% for empresa in perfil.empresas.all %}
+								<option value="{{ empresa.rut }}">{{ empresa.empresa }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group form-group-material-green">
+						<label class="control-label">Tipo receptor</label>
+						<select name="tipo_receptor" id="tipo_receptor" class="form-control">
+							<option value="all">Todos</option>
+							<option value="electronico">Electrónico</option>
+							<option value="manual">Manual</option>
+							<option value="ambos">Ambos</option>
+						</select>
+					</div>
+            	</div>
+            </div>
+            <div class="modal-footer">
+            	<div class="form-group" align="right" style="margin-right:20px;">
+            		<button class="btn btn-flat" data-dismiss="modal">Cancelar</button>
+					<button class="btn btn-material-green" id="run_search">Buscar</button>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cargando -->
+<div class="modal" id="loadingModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeLoadingModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Buscando...</h4>
+            </div>
+            <div class="modal-body">
+                <p>por favor espere unos segundos</p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NOTIFICACIONES -->
+<div class="modal" id="notificationModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="closeNotificationModal" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title" id="notificationTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="notificationBody"></p>
+            </div>
+            <div class="modal-footer">
+            	<div class="form-group" align="right" style="margin-right:20px;">
+					<button class="btn btn-flat" data-dismiss="modal">Cerrar</button>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+	<script src="{% static "js/bootstrap-material-datetimepicker.js" %}"></script>
+	<script src="{% static "js/dashboard/index.min.js" %}"></script>
+{% endblock %}

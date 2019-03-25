@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load staticfiles %}
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="{% static "img/favicon.png" %}" type="image/vnd.microsoft.icon" />
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static "css/material.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/ripples.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/style.css" %}">
+	<title>Azurian Track</title>
+</head>
+<body class="fondo-azurian">
+	
+	<div class="container-fluid">
+
+		<div>
+			<img src="{% static "img/track_logo.png" %}" width="189" height="50">
+		</div>
+		
+		<br>
+		
+		<div class="row">
+			
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+				
+				<div class="well well-login" style="width:100%; padding-bottom: 40px;">
+					<h4 class="header" align="center">Iniciar sesión</h4><br>
+					<form name='formulario' id="formulario" method="post" action=""> {% csrf_token %}
+
+						<div class="form-group form-group-material-green has-success">
+							<label class="control-label">Usuario</label>
+							<input type="email" class="form-control" name="username" data-hint="Ingresa tu dirección de correo." autofocus="true" required>
+						</div>
+
+						<div class="form-group form-group-material-green has-success">
+							<label class="control-label">Contraseña</label>
+							<input type="password" class="form-control" name="password" data-hint="Ingresa tu contraseña" required>
+						</div>
+
+						<div class="form-group" align="right">
+							<button class="btn btn-raised btn-material-green" style="width:100%;" type="submit">Acceder  <div class="ripple-wrapper"></div></button>
+						</div>
+
+					</form>
+				</div>
+
+			</div>
+
+			<div class="hidden-xs hidden-sm col-md-6 col-lg-6">
+				
+				<div class="carousel slide" id="carouselLogin">
+					
+					<div class="carousel-inner">
+						
+						<div class="item active">
+							<img src="{% static "img/camp04.jpg" %}" alt="">
+							<div class="carousel-caption">
+								<h3>Facilita tu gestión tributaria.</h3>
+							</div>
+						</div>
+						<div class="item">
+							<img src="{% static "img/camp01.jpg" %}" alt="">
+							<div class="carousel-caption">
+								<h3>Evita atrasos en el pago de facturas, disminuye el IVA no recuperado.</h3>
+							</div>
+						</div>
+						<div class="item">
+							<img src="{% static "img/camp02.jpg" %}" alt="">
+							<div class="carousel-caption">
+								<h3>Da el siguiente paso en gestión tributaria electrónica.</h3>
+							</div>
+						</div>
+						<div class="item">
+							<img src="{% static "img/camp03.jpg" %}" alt="">
+							<div class="carousel-caption">
+								<h3>Logra que todo el ciclo documental sea digital, dando validez legal a tus documentos.</h3>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+			
+		</div>
+		
+		<br>
+
+		<div class="well well-login">
+			
+			<div class="row">
+				<div class="col-xs-5 col-sm-5 col-md-5 col-lg5">
+					<h2 align="center">Queremos ayudarte</h2>
+				</div>
+				<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 form-inline">
+					<div class="form-group" style="margin-right: 20px;">
+						<img src="{% static "img/icon-plataforma.png" %}">
+						<a href="http://soporte.azurian.com" target="_blank">soporte.azurian.com</a>
+					</div>
+					<div class="form-group" style="margin-right: 20px;">
+						<img src="{% static "img/icon-correo.png" %}">
+						<a>soporte@azurian.com</a>
+					</div>
+					<div class="form-group" style="margin-right: 20px;">
+						<img src="{% static "img/icon-fono.png" %}">
+						<a>+56 22 402 5 400</a>
+					</div>
+					<div class="form-group" style="margin-top: 10px;">
+						<img src="{% static "img/icon-horario.png" %}">
+						<a>Hábil: Lun-Vie de 9:00 a 18:00. El resto es horario no hábil.</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<footer>
+			<a class="link-verde" href="http://www.azurian.com" target="_blank">Copyright © Azurian.com. Todos los Derechos Reservados.</a>
+		</footer>
+		
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="{% static "js/material.min.js" %}"></script>
+	<script src="{% static "js/ripples.min.js" %}"></script>
+	<script src="{% static "js/autenticacion/login.min.js" %}"></script>
+	<script>$.material.init();</script>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-87625163-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+</body>
+</html>
